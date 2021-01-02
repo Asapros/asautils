@@ -1,4 +1,4 @@
-# Package by Asapros (01.01.2021)
+#
 class EXlist(list):
     def getItemsByAttribute(self, attribute: str, value, **kwargs) -> list:
         """Returns all objects from list wich 'attribute' is equal to 'value'

@@ -1,4 +1,4 @@
-# Package by Asapros (01.01.2021)
+#
 class Game:
     def __init__(self, mainmethod, *args):
         """Base for mostly cmd games"""
