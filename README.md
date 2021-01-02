@@ -1,2 +1,2 @@
 # asautils
-Package with some usful features
+Package with some useful features
