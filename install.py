@@ -23,6 +23,7 @@ print("[install.py] Copied module files from %s to %s" % (DIR, DISTDIR))
 print("[install.py] Pushing to git...")
 for module in modules:
     os.system("git add %s" % module)
+os.system("git checkout %s" % GITBRANCH)
 os.system("git commit -m \"Automatic commit \"")
 os.system("git push origin %s" % GITBRANCH)
 print("[install.py] Pushed to branch %s" % GITBRANCH)
