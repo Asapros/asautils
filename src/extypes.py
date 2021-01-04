@@ -122,6 +122,19 @@ class EXint(int):
             return 1/self
         except ZeroDivisionError:
             return 0
+    def isEven(self) -> bool:
+        """Returns True if number is even"""
+        return self / 2 == float(self//2)
+    def isPowerOf2(self) -> bool:
+        """Returns True if number is a power of 2
+negative numbers not supported yet
+"""
+        number = 2
+        while number <= self:
+            if self == number or self == 1:
+                return True
+            number = number**2
+        return False
 class EXdict(dict):
     def visualize(self) -> str:
         """Visualizes values of dict """
@@ -161,6 +174,6 @@ class EXdict(dict):
 
         return string
             
-
+print(EXint(256).isPowerOf2())
             
                 
