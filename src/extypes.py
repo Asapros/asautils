@@ -68,6 +68,25 @@ Returning result of operation
             return True
         except:
             return False
+    def visualize(self):
+        """Visualizes values of the list"""
+        string = ""
+        for element in self:
+            if type(element) == int:
+                string += (" ├{} [%d. %d]\n" % (self.index(element), element)).format("%")
+            if type(element) == str:
+                string += " ├# [%d. \"%s\"]\n" % (self.index(element), element)
+            if type(element) == bool:
+                string += " ├$ [%d. %s]\n" % (self.index(element), str(element))
+            if type(element) == list:
+                header = " ├: [%d.]┐" % self.index(element)
+                string += header
+                string += "\n" + EXstr(EXlist(element).visualize()).addEveryLine(" │" + " "*(len(header)-4))
+            if type(element) == dict:
+                header = " ├& [%d.]┐" % self.index(element)
+                string += header
+                string += "\n" + EXstr(EXdict(element).visualize()).addEveryLine(" │" + " "*(len(header)-4))
+        return string
 class EXstr(str):
     def alphabetOrds(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
@@ -138,42 +157,24 @@ negative numbers not supported yet
 class EXdict(dict):
     def visualize(self) -> str:
         """Visualizes values of dict """
-        return self.__visualize(self)
-    def __visualize(self, dictionary: dict):
         string = ""
-        for value in list(dictionary):
-            if type(dictionary[value]) == int:
-                string += (" ├{} [%s: %d]\n" % (value, dictionary[value])).format("%")
-            if type(dictionary[value]) == str:
-                string += " ├# [%s: \"%s\"]\n" % (value, dictionary[value])
-            if type(dictionary[value]) == bool:
-                string += " ├$ [%s: %s]\n" % (value, str(dictionary[value]))
-            if type(dictionary[value]) == list:
+        for value in list(self):
+            if type(self[value]) == int:
+                string += (" ├{} [%s: %d]\n" % (value, self[value])).format("%")
+            if type(self[value]) == str:
+                string += " ├# [%s: \"%s\"]\n" % (value, self[value])
+            if type(self[value]) == bool:
+                string += " ├$ [%s: %s]\n" % (value, str(self[value]))
+            if type(self[value]) == list:
                 header = " ├: [%s]┐" % value
                 string += header
-                string += "\n" + EXstr(self.__visualizeList(dictionary[value])).addEveryLine(" │" + " "*(len(header)-4))
-            if type(dictionary[value]) == dict:
+                string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
+            if type(self[value]) == dict:
                 header = " ├& [%s]┐" % value
                 string += header
-                string += "\n" + EXstr(self.__visualize(dictionary[value])).addEveryLine(" │" + " "*(len(header)-4))
+                string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
 
         return string
-    def __visualizeList(self, l: list):
-        string = ""
-        for element in l:
-            if type(element) == int:
-                string += (" ├{} [%d. %d]\n" % (l.index(element), element)).format("%")
-            if type(element) == str:
-                string += " ├# [%d. \"%s\"]\n" % (l.index(element), element)
-            if type(element) == bool:
-                string += " ├$ [%d. %s]\n" % (l.index(element), str(element))
-            if type(element) == list:
-                header = " ├: [%d.]┐" % l.index(element)
-                string += header
-                string += "\n" + EXstr(self.__visualizeList(element)).addEveryLine(" │" + " "*(len(header)-4))
 
-        return string
-            
-print(EXint(256).isPowerOf2())
             
                 
