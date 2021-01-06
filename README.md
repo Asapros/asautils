@@ -8,4 +8,6 @@ Steps to install:
 Other modules required:
 - cryptograpthy (serialization)
 
+To install that modules you need to type 'pip install <modulename>' in command line. If it doesn't work, then try reading/watching package installing tutorials.
+
 Also I'm really new with sharing my code, so it's not available on PyPi yet.
