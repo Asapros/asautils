@@ -1,7 +1,26 @@
 #
+"""
+Base for making simple games
+Examples:
+    def gamemainmethod():
+        input()
+        print("This will show every time you press enter")
+    def gamesidetask1():
+        print("This will keep printing no matter that in 'gamemainmethod' is waiting for user input")
+    game = Game(gamemainmethod, [gamesidetask1])
+    game.run_nonblockings()
+    game.run()
+    
+
+    # Waiting 25s
+    sleep(25)
+
+    # Killing all the game processes
+    game.kill()
+"""
 class Game:
     def __init__(self, mainmethod, *args):
-        """Base for mostly cmd games"""
+        """Base for cmd games"""
         self.mainmethod = mainmethod
         self.nonblockings = []
         if len(args):

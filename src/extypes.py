@@ -1,3 +1,29 @@
+"""
+This modules are extensions of python built-in types.
+All of them includes 'serialization' ( help(asautils.serialization) )
+They're adding some new functions like 'visualization' of list and dict for example
+
+Examples:
+    EXlist(["a", "a", "a", "a"]).areAllEqual()
+    >> True
+    
+    EXstr("Hello world").randomcase()
+    >> HeLlO wOrlD
+    
+    EXint(15).isEven()
+    >> False
+    
+    EXdict({"a":52, "d":["a", {"abc":256}]}).visualize()
+    >>
+     ├% [a: 52]
+     ├: [d]┐
+     │     ├# [0. "a"]
+     │     ├& [1.]┐
+     │     │      ├% [abc: 256]
+     │     │     
+     │    
+
+"""
 from serialization import Serializable
 
 class EXlist(list, Serializable):

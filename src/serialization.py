@@ -1,3 +1,26 @@
+"""
+Requires 'cryptography' module to work.
+All 'extypes' extends 'Serializable' ( help(asautils.extypes) )
+
+Examples:
+    # Saving object in a file
+    obj = EXlist(["a", "b", "c"])
+    obj.save("obj.bin")
+    obj = EXlist()
+    obj.load("obj.bin")
+    print(obj)
+    >>> ["a", "b", "c"]
+    # Saving encrypted object in a file
+    obj = EXstr("SuperSecretString")
+    obj.saveEncoded("obj.bin", "SuperSecretPassword")
+    obj = EXstr()
+    # Wrong password will raise a 'InvalidToken' error
+    obj.loadDecoded("obj.bin", "SuperSecretPassword")
+    print(obj)
+    >>> SuperSecretString
+    
+    
+"""
 from cryptography.fernet import Fernet
 from base64 import urlsafe_b64encode
 from pickle import dump, load, dumps, loads
