@@ -1,5 +1,6 @@
-#
-class EXlist(list):
+from serialization import Serializable
+
+class EXlist(list, Serializable):
     def getItemsByAttribute(self, attribute: str, value, **kwargs) -> list:
         """Returns all objects from list wich 'attribute' is equal to 'value'
 Use 'limit' keyword in args as maximum lenght of found elements
@@ -46,28 +47,7 @@ returns all objects with x=1 and y=2
             if item == value:
                 return False
         return True
-    def save(self, file: str) -> bool:
-        """Saving serialized list in a file
-Returning result of operation
-"""
-        from pickle import dump
-        try:
-            dump(list(self), open(file, "wb"))
-            return True
-        except:
-            return False
-    def load(self, file: str) -> bool:
-        """Loading serialized list from a file
-Returning result of operation
-"""
-        from pickle import load
-        try:
-            newvalues = load(open(file, "rb"))
-            self.clear()
-            self.extend(newvalues)
-            return True
-        except:
-            return False
+    
     def visualize(self):
         """Visualizes values of the list"""
         string = ""
@@ -87,7 +67,7 @@ Returning result of operation
                 string += header
                 string += "\n" + EXstr(EXdict(element).visualize()).addEveryLine(" │" + " "*(len(header)-4))
         return string
-class EXstr(str):
+class EXstr(str, Serializable):
     def alphabetOrds(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
         numbers = []
@@ -125,8 +105,8 @@ class EXstr(str):
         for line in lines:
             string += start + line + "\n"
         return string
-class EXint(int):
-    def alphabetChar(self) -> str:
+class EXint(int, Serializable):
+    def alphabetChar(self) ->str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
             return None
@@ -154,7 +134,7 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
-class EXdict(dict):
+class EXdict(dict, Serializable):
     def visualize(self) -> str:
         """Visualizes values of dict """
         string = ""
@@ -173,7 +153,6 @@ class EXdict(dict):
                 header = " ├& [%s]┐" % value
                 string += header
                 string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
-
         return string
 
             
