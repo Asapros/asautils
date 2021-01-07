@@ -27,27 +27,12 @@ Examples:
 from serialization import Serializable
 
 class EXlist(list, Serializable):
-    def getItemsByAttribute(self, attribute: str, value, **kwargs) -> list:
-        """Returns all objects from list wich 'attribute' is equal to 'value'
-Use 'limit' keyword in args as maximum lenght of found elements
-"""
-        itemlist = []
-        limit = None
-        if "limit" in kwargs: limit = kwargs["limit"]
-        for item in self:
-            if hasattr(item, attribute) and getattr(item, attribute) == value:
-                if limit != None and len(itemlist) >= limit:
-                    break
-                itemlist.append(item)
-        return itemlist
-    def getItemsByAttributes(self, attributedict: dict, **kwargs):
+    def getItemsByAttributes(self, attributedict: dict, limit=None):
         """Searching for items that matchs all requirments
 Example: getItemsByAttributes({"x":1, "y":2})
 returns all objects with x=1 and y=2
 """
         itemlist = []
-        limit = None
-        if "limit" in kwargs: limit = kwargs["limit"]
         for item in self:
             results = []
             for attribute in list(attributedict):
@@ -61,37 +46,59 @@ returns all objects with x=1 and y=2
                 itemlist.append(item)
         return itemlist
 
-    def areAllEqual(self, value) -> bool:
-        """Returns false if at least 1 element is not equal to value"""
+    def areAllEqual(self, value=None) -> bool:
+        """Returns false if at least 1 element is not equal to value
+If value not defined checks if are elements are equal to themselfs
+"""
+        if len(self) <= 0 and value==None:
+            return False
+        elif value==None:
+            value = self[0]
         for item in self:
             if item != value:
                 return False
         return True
-    def areAllNotEqual(self, value) -> bool:
-        """Returns false if at least 1 element is equal to value"""
-        for item in self:
-            if item == value:
-                return False
+    def areAllNotEqual(self, value=None) -> bool:
+        """Returns false if at least 1 element is equal to value
+If value not defined checks if are elements are not equal to themselfs
+"""
+        if len(self) <= 0 and value==None:
+            return False
+        elif value==None:
+            saw = []
+            for item in self:
+                if item in saw:
+                    return False
+                saw.append(item)
+        else:
+            for item in self:
+                if item == value:
+                    return False
         return True
     
     def visualize(self):
         """Visualizes values of the list"""
         string = ""
         for element in self:
-            if type(element) == int:
+            if type(element) == set or type(element) == tuple:
+                element = list(element)
+            elif type(element) == int:
                 string += (" ├{} [%d. %d]\n" % (self.index(element), element)).format("%")
-            if type(element) == str:
+            elif type(element) == str:
                 string += " ├# [%d. \"%s\"]\n" % (self.index(element), element)
-            if type(element) == bool:
+            elif type(element) == bool:
                 string += " ├$ [%d. %s]\n" % (self.index(element), str(element))
-            if type(element) == list:
+            elif type(element) == list:
                 header = " ├: [%d.]┐" % self.index(element)
                 string += header
-                string += "\n" + EXstr(EXlist(element).visualize()).addEveryLine(" │" + " "*(len(header)-4))
-            if type(element) == dict:
+                string += "\n" + EXstr(EXlist(element).visualize()).addEveryLine(" │" + " "*(len(header)-4)) + "\n"
+            elif type(element) == dict:
                 header = " ├& [%d.]┐" % self.index(element)
                 string += header
-                string += "\n" + EXstr(EXdict(element).visualize()).addEveryLine(" │" + " "*(len(header)-4))
+                string += "\n" + EXstr(EXdict(element).visualize()).addEveryLine(" │" + " "*(len(header)-4)) + "\n"
+            else:
+                string += " ├> [%d. %s]\n" % (self.index(element), str(element))
+                
         return string
 class EXstr(str, Serializable):
     def alphabetOrds(self) -> list:
@@ -125,12 +132,13 @@ class EXstr(str, Serializable):
     def reverse(self) -> str:
         """Returns reversed value"""
         return self[::-1]
-    def addEveryLine(self, start: str) -> str:
+    def addEveryLine(self, start: str="", end: str="") -> str:
+        """Adds string from 'start' argument at start and 'end' at end of every line"""
         lines = self.split("\n")
         string = ""
         for line in lines:
-            string += start + line + "\n"
-        return string
+            string += start + line + end + "\n" 
+        return string[:-1]
 class EXint(int, Serializable):
     def alphabetChar(self) ->str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
@@ -165,20 +173,24 @@ class EXdict(dict, Serializable):
         """Visualizes values of dict """
         string = ""
         for value in list(self):
-            if type(self[value]) == int:
+            if type(self[value]) == set or type(self[value]) == tuple:
+                self[value] = list(self[value])
+            elif type(self[value]) == int:
                 string += (" ├{} [%s: %d]\n" % (value, self[value])).format("%")
-            if type(self[value]) == str:
+            elif type(self[value]) == str:
                 string += " ├# [%s: \"%s\"]\n" % (value, self[value])
-            if type(self[value]) == bool:
+            elif type(self[value]) == bool:
                 string += " ├$ [%s: %s]\n" % (value, str(self[value]))
-            if type(self[value]) == list:
+            elif type(self[value]) == list:
                 header = " ├: [%s]┐" % value
                 string += header
                 string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
-            if type(self[value]) == dict:
+            elif type(self[value]) == dict:
                 header = " ├& [%s]┐" % value
                 string += header
                 string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
+            else:
+                string += " ├> [%s]\n" % str(self[value])
         return string
 
             

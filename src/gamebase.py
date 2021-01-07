@@ -8,7 +8,6 @@ Examples:
     def gamesidetask1():
         print("This will keep printing no matter that in 'gamemainmethod' is waiting for user input")
     game = Game(gamemainmethod, [gamesidetask1])
-    game.run_nonblockings()
     game.run()
     
 
@@ -28,10 +27,13 @@ class Game:
         self.running = False
         self.running_nonblockings = False
     def run(self):
+        self.start_nonblockings()
+        self.start()
+    def start(self):
         """Repeats 'self.mainmethod' until 'self.running' is false executed"""
         self.running = True
         while self.running: self.mainmethod()
-    def run_nonblockings(self):
+    def start_nonblockings(self):
         """Repeats all methods passed as *args until 'self.running_nonblockings' is false"""
         self.running_nonblockings = True
         from threading import Thread

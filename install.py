@@ -17,7 +17,7 @@ except Exception as e:
 
 print("Copying modules...")
 for module in os.listdir(DIR):
-    if module.endswith("py"):
+    if module.endswith(".py"):
         try:
             copy(DIR + module, DISTDIR)
         except (FileNotFoundError, PermissionError) as e:
