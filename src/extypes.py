@@ -158,6 +158,8 @@ class EXint(int, Serializable):
     def isEven(self) -> bool:
         """Returns True if number is even"""
         return self / 2 == float(self//2)
+    def isZero(self) -> bool:
+        return self == 0
     def isPowerOf2(self) -> bool:
         """Returns True if number is a power of 2
 negative numbers not supported yet
