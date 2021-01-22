@@ -24,9 +24,9 @@ Examples:
      │    
 
 """
-from serialization import Serializable
 
-class EXlist(list, Serializable):
+
+class EXlist(list):
     def getItemsByAttributes(self, attributedict: dict, limit=None):
         """Searching for items that matchs all requirments
 Example: getItemsByAttributes({"x":1, "y":2})
@@ -100,7 +100,7 @@ If value not defined checks if are elements are not equal to themselfs
                 string += " ├> [%d. %s]\n" % (self.index(element), str(element))
                 
         return string
-class EXstr(str, Serializable):
+class EXstr(str):
     def alphabetOrds(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
         numbers = []
@@ -139,7 +139,7 @@ class EXstr(str, Serializable):
         for line in lines:
             string += start + line + end + "\n" 
         return string[:-1]
-class EXint(int, Serializable):
+class EXint(int):
     def alphabetChar(self) ->str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
@@ -170,7 +170,7 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
-class EXdict(dict, Serializable):
+class EXdict(dict):
     def visualize(self) -> str:
         """Visualizes values of dict """
         string = ""
