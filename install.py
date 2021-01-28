@@ -19,6 +19,8 @@ print("Copying modules...")
 for module in os.listdir(DIR):
     if module.endswith(".py"):
         try:
+            if not os.path.exists(DISTDIR):
+                os.mkdir(DISTDIR)
             copy(DIR + module, DISTDIR)
         except (FileNotFoundError, PermissionError) as e:
             input(e)
