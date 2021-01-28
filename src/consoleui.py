@@ -12,8 +12,9 @@ option3
 
 """
 from enum import Enum
-from pynput import keyboard
 from os import system
+from pynput import keyboard
+
 
 class Sides(Enum):
     """Enum used for specifying sides of cursor in OptionSelector"""
@@ -26,7 +27,7 @@ class Sides(Enum):
 def clear():
     """Clearing cmd screen"""
     system("cls")
-def genText(text, x, y, anchor = Sides.LEFT):
+def gen_text(text, x, y, anchor = Sides.LEFT):
     """Generating text in specific place cmd"""
     if anchor == Sides.LEFT:
         return "\033[{2};{1}H{0}".format(text, x, y)
@@ -67,7 +68,7 @@ you'll need to run your code in other one."""
         updatestr = ""
         if self.title != "":
             optionadder = 2
-            updatestr = genText(self.title, 1, 1) 
+            updatestr = gen_text(self.title, 1, 1) 
 
         for option in range(0,len(self.options)):
             selectedA = ""
@@ -89,7 +90,7 @@ you'll need to run your code in other one."""
                     selectedB = " " * self.space + " " * len(self.selectchars[1])
                     selectedA = " " * self.space + " " * len(self.selectchars[0])
 
-            updatestr += genText(selectedA + self.options[option] + selectedB, 1, option+optionadder)
+            updatestr += gen_text(selectedA + self.options[option] + selectedB, 1, option+optionadder)
         updatestr += self.footer
         print(updatestr)
     def __keypressed(self, key):

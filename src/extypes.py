@@ -2,21 +2,21 @@
 This modules are extensions of python built-in types.
 
 Examples:
-    EXlist(["a", "a", "a", "a"]).areAllEqual()
+    EXlist(["a", "a", "a", "a"]).are_all_equal()
     >> True
     
     EXstr("Hello world").randomcase()
     >> HeLlO wOrlD
     
-    EXint(15).isEven()
+    EXint(15).is_even()
     >> False
 """
 
 
 class EXlist(list):
-    def getItemsByAttributes(self, attributedict: dict, limit=None):
+    def get_items_by_attributes(self, attributedict: dict, limit=None):
         """Searching for items that matchs all requirments
-Example: getItemsByAttributes({"x":1, "y":2})
+Example: get_items_by_attributes({"x":1, "y":2})
 returns all objects with x=1 and y=2
 """
         itemlist = []
@@ -33,7 +33,7 @@ returns all objects with x=1 and y=2
                 itemlist.append(item)
         return itemlist
 
-    def areAllEqual(self, value=None) -> bool:
+    def are_all_equal(self, value=None) -> bool:
         """Returns false if at least 1 element is not equal to value
 If value not defined checks if are elements are equal to themselfs
 """
@@ -45,7 +45,7 @@ If value not defined checks if are elements are equal to themselfs
             if item != value:
                 return False
         return True
-    def areAllNotEqual(self, value=None) -> bool:
+    def are_all_different(self, value=None) -> bool:
         """Returns false if at least 1 element is equal to value
 If value not defined checks if are elements are not equal to themselfs
 """
@@ -63,7 +63,7 @@ If value not defined checks if are elements are not equal to themselfs
                     return False
         return True
 class EXstr(str):
-    def alphabetOrds(self) -> list:
+    def alphabet_ords(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
         numbers = []
         for char in self:
@@ -72,10 +72,10 @@ class EXstr(str):
             else:
                 numbers.append(None)
         return numbers
-    def base25Value(self) -> int:
+    def base25_value(self) -> int:
         """Returns base25 value of string (a=0)"""
         total = 0
-        alphabetvalues = self.alphabetOrds()
+        alphabetvalues = self.alphabet_ords()
         alphabetvalues.reverse()
         for index in range(len(alphabetvalues)):
             if alphabetvalues[index] != None:
@@ -94,7 +94,7 @@ class EXstr(str):
     def reverse(self) -> str:
         """Returns reversed value"""
         return self[::-1]
-    def addEveryLine(self, start: str="", end: str="") -> str:
+    def add_every_line(self, start: str="", end: str="") -> str:
         """Adds string from 'start' argument at start and 'end' at end of every line"""
         lines = self.split("\n")
         string = ""
@@ -102,7 +102,7 @@ class EXstr(str):
             string += start + line + end + "\n" 
         return string[:-1]
 class EXint(int):
-    def alphabetChar(self) ->str:
+    def alphabet_char(self) ->str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
             return None
@@ -117,12 +117,12 @@ class EXint(int):
             return 1/self
         except ZeroDivisionError:
             return 0
-    def isEven(self) -> bool:
+    def is_even(self) -> bool:
         """Returns True if number is even"""
         return self / 2 == float(self//2)
-    def isZero(self) -> bool:
+    def is_zero(self) -> bool:
         return self == 0
-    def isPowerOf2(self) -> bool:
+    def is_power2(self) -> bool:
         """Returns True if number is a power of 2
 negative numbers not supported yet
 """
