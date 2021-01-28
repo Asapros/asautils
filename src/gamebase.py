@@ -1,4 +1,3 @@
-#
 """
 Base for making simple games
 Examples:
