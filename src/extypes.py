@@ -1,7 +1,5 @@
 """
 This modules are extensions of python built-in types.
-All of them includes 'serialization' ( help(asautils.serialization) )
-They're adding some new functions like 'visualization' of list and dict for example
 
 Examples:
     EXlist(["a", "a", "a", "a"]).areAllEqual()
@@ -12,21 +10,10 @@ Examples:
     
     EXint(15).isEven()
     >> False
-    
-    EXdict({"a":52, "d":["a", {"abc":256}]}).visualize()
-    >>
-     ├% [a: 52]
-     ├: [d]┐
-     │     ├# [0. "a"]
-     │     ├& [1.]┐
-     │     │      ├% [abc: 256]
-     │     │     
-     │    
-
 """
-from serialization import Serializable
 
-class EXlist(list, Serializable):
+
+class EXlist(list):
     def getItemsByAttributes(self, attributedict: dict, limit=None):
         """Searching for items that matchs all requirments
 Example: getItemsByAttributes({"x":1, "y":2})
@@ -75,32 +62,7 @@ If value not defined checks if are elements are not equal to themselfs
                 if item == value:
                     return False
         return True
-    
-    def visualize(self):
-        """Visualizes values of the list"""
-        string = ""
-        for element in self:
-            if type(element) == set or type(element) == tuple:
-                element = list(element)
-            elif type(element) == int:
-                string += (" ├{} [%d. %d]\n" % (self.index(element), element)).format("%")
-            elif type(element) == str:
-                string += " ├# [%d. \"%s\"]\n" % (self.index(element), element)
-            elif type(element) == bool:
-                string += " ├$ [%d. %s]\n" % (self.index(element), str(element))
-            elif type(element) == list:
-                header = " ├: [%d.]┐" % self.index(element)
-                string += header
-                string += "\n" + EXstr(EXlist(element).visualize()).addEveryLine(" │" + " "*(len(header)-4)) + "\n"
-            elif type(element) == dict:
-                header = " ├& [%d.]┐" % self.index(element)
-                string += header
-                string += "\n" + EXstr(EXdict(element).visualize()).addEveryLine(" │" + " "*(len(header)-4)) + "\n"
-            else:
-                string += " ├> [%d. %s]\n" % (self.index(element), str(element))
-                
-        return string
-class EXstr(str, Serializable):
+class EXstr(str):
     def alphabetOrds(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
         numbers = []
@@ -139,7 +101,7 @@ class EXstr(str, Serializable):
         for line in lines:
             string += start + line + end + "\n" 
         return string[:-1]
-class EXint(int, Serializable):
+class EXint(int):
     def alphabetChar(self) ->str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
@@ -158,6 +120,8 @@ class EXint(int, Serializable):
     def isEven(self) -> bool:
         """Returns True if number is even"""
         return self / 2 == float(self//2)
+    def isZero(self) -> bool:
+        return self == 0
     def isPowerOf2(self) -> bool:
         """Returns True if number is a power of 2
 negative numbers not supported yet
@@ -168,30 +132,3 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
-class EXdict(dict, Serializable):
-    def visualize(self) -> str:
-        """Visualizes values of dict """
-        string = ""
-        for value in list(self):
-            if type(self[value]) == set or type(self[value]) == tuple:
-                self[value] = list(self[value])
-            elif type(self[value]) == int:
-                string += (" ├{} [%s: %d]\n" % (value, self[value])).format("%")
-            elif type(self[value]) == str:
-                string += " ├# [%s: \"%s\"]\n" % (value, self[value])
-            elif type(self[value]) == bool:
-                string += " ├$ [%s: %s]\n" % (value, str(self[value]))
-            elif type(self[value]) == list:
-                header = " ├: [%s]┐" % value
-                string += header
-                string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
-            elif type(self[value]) == dict:
-                header = " ├& [%s]┐" % value
-                string += header
-                string += "\n" + EXstr(EXlist(self[value]).visualize()).addEveryLine(" │" + " "*(len(header)-4))
-            else:
-                string += " ├> [%s]\n" % str(self[value])
-        return string
-
-            
-                
