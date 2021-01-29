@@ -42,7 +42,7 @@ returns all objects with x=1 and y=2
                 return False
         return True
     def are_all_equal(self) -> bool:
-        """Returns true if at all elements is are equal"""
+        """Returns true if at all elements are equal"""
         if len(self) <= 0:
             return False
         else:
@@ -60,7 +60,7 @@ returns all objects with x=1 and y=2
                 return False
         return True
     def are_all_different(self) -> bool:
-        """Returns false if at least 1 element is different from others"""
+        """Returns true if all elements are different from others"""
         if len(self) <= 0:
             return False
         saw = []
