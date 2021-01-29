@@ -33,35 +33,44 @@ returns all objects with x=1 and y=2
                 itemlist.append(item)
         return itemlist
 
-    def are_all_equal(self, value=None) -> bool:
-        """Returns false if at least 1 element is not equal to value
-If value not defined checks if are elements are equal to themselfs
-"""
-        if len(self) <= 0 and value==None:
+    def are_all_equal_to(self, value) -> bool:
+        """Returns false if at least 1 element is not equal to value"""
+        if len(self) <= 0:
             return False
-        elif value==None:
+        for item in self:
+            if item != value:
+                return False
+        return True
+    def are_all_equal(self) -> bool:
+        """Returns true if at all elements is are equal"""
+        if len(self) <= 0:
+            return False
+        else:
             value = self[0]
         for item in self:
             if item != value:
                 return False
         return True
-    def are_all_different(self, value=None) -> bool:
-        """Returns false if at least 1 element is equal to value
-If value not defined checks if are elements are not equal to themselfs
-"""
-        if len(self) <= 0 and value==None:
+    def are_all_different_from(self, value) -> bool:
+        """Returns false if at least 1 element is equal to value"""
+        if len(self) <= 0:
             return False
-        elif value==None:
-            saw = []
-            for item in self:
-                if item in saw:
-                    return False
-                saw.append(item)
-        else:
-            for item in self:
-                if item == value:
-                    return False
+        for item in self:
+            if item == value:
+                return False
         return True
+    def are_all_different(self) -> bool:
+        """Returns false if at least 1 element is different from others"""
+        if len(self) <= 0:
+            return False
+        saw = []
+        for item in self:
+            if item in saw:
+                return False
+            saw.append(item)
+
+        return True
+
 class EXstr(str):
     def alphabet_ords(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
