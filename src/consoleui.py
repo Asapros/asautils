@@ -14,7 +14,8 @@ option3
 from enum import Enum
 from os import system
 from pynput import keyboard
-
+from time import sleep
+from random import randint
 
 class Sides(Enum):
     """Enum used for specifying sides of cursor in OptionSelector"""
@@ -33,6 +34,15 @@ def gen_text(text, x, y, anchor = Sides.LEFT):
         return "\033[{2};{1}H{0}".format(text, x, y)
     elif anchor == Sides.RIGHT:
         return "\033[{2};{1}H{0}".format(text, x-len(text)+1, y)
+
+def tprint(text, mintime, maxtime, end="\n"):
+    """Slowly printing text.
+mintime and maxtime are in miliseconds
+'end' argument will be printed at the very end"""
+    for char in text:
+        print(char, end="", flush=True)
+        sleep(randint(mintime, maxtime)/1000)
+    print(end, end="")
 
 class OptionSelector:
     def __init__(self, options, selectchars = (">","<"), space=1, title="", selectside = Sides.RIGHT, footer=""):
