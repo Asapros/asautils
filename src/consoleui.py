@@ -43,7 +43,17 @@ mintime and maxtime are in miliseconds
         print(char, end="", flush=True)
         sleep(randint(mintime, maxtime)/1000)
     print(end, end="")
-
+def type_print(text, end="\n"):
+    """Simulates text typed by someone"""
+    for char in text:
+        print(char, end="", flush=False)
+        if char == ".":
+            sleep(randint(10,15)/10)
+        elif char == "," or char == "-":
+            sleep(randint(6,10)/10)
+        else:
+            sleep(randint(80,150)/1000)
+    print(end, end="")
 class OptionSelector:
     def __init__(self, options, selectchars = (">","<"), space=1, title="", selectside = Sides.RIGHT, footer=""):
         """OptionSelctor is used for creating cmd menus. Addicional arguments:
