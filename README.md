@@ -6,8 +6,7 @@ Steps to install:
 2. Run 'install.py'
 
 Other modules required:
-- cryptograpthy (serialization)
-- colorama (compare, logger)
+- colorama (consoleui, logger)
 
 To install that modules you need to type 'pip install <modulename>' in command line. If it doesn't work, then try reading/watching package installing tutorials.
 
