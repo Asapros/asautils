@@ -7,6 +7,7 @@ Steps to install:
 
 Other modules required:
 - colorama (consoleui, logger)
+- pynput (consoleui)
 
 To install that modules you need to type 'pip install <modulename>' in command line. If it doesn't work, then try reading/watching package installing tutorials.
 
