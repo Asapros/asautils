@@ -5,6 +5,6 @@ setup(
    version='1.0',
    description='A useful',
    author='Asapros',
-   packages=['src'],
+   packages=['asautils'],
    install_requires=['colorama', 'windows-curses']
 )
