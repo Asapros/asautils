@@ -25,19 +25,40 @@ class Sides(Enum):
     BOTH = 2
     # There will never be 'center' side cause it's too glitchy
 
-def format_colors(string): return string.format(green=Fore.GREEN, reset=Fore.RESET, red=Fore.RED, blue=Fore.BLUE, cyan=Fore.CYAN, yellow=Fore.YELLOW, magenta=Fore.MAGENTA)
+def format_colors(string):
+    """
+Formating string with colors. Tags:
+    {red}     -> start red     color
+    {green}   -> start green   color
+    {blue}    -> start blue    color
+    {cyan}    -> start cyan    color
+    {magenta} -> start magenta color
+    {yellow}  -> start yellow  color
+    #------------------------------#
+    {reset} -> end all colors
+
+:param  str string: -> String to format
+:return str: -> Returns colored string
+    """
+    return string.format(green=Fore.GREEN, reset=Fore.RESET, red=Fore.RED, blue=Fore.BLUE, cyan=Fore.CYAN, yellow=Fore.YELLOW, magenta=Fore.MAGENTA)
 
 def tprint(text, mintime, maxtime, end="\n"):
-    """Slowly printing text.
-mintime and maxtime are in miliseconds
-'end' argument will be printed at the very end"""
+    """Types text.
+    :param str text:    -> Text you want to print
+    :param int mintime: -> Minimal time (mills)
+    :param int maxtime: -> Maximal time (mills)
+    :optional("\n") param str end: -> Same as end in print()
+    """
     for char in text:
         print(char, end="", flush=True)
         sleep(randint(mintime, maxtime)/1000)
     print(end, end="")
 
 def type_print(text, end="\n"):
-    """Simulates text typed by someone"""
+    """Types text stopping on: . , -
+    :param str text: -> Text you want to print
+    :optional("\n") param str end: -> Same as end in print()
+    """
     for char in text:
         print(char, end="", flush=False)
         if char == ".":
@@ -49,13 +70,16 @@ def type_print(text, end="\n"):
     print(end, end="")
 class OptionSelector:
     def __init__(self, options, selectchars = (">","<"), space=1, title="", selectside = Sides.RIGHT, footer=""):
-        """OptionSelctor is used for creating cmd menus. Addicional arguments:
-    title, footer - text that will appear before, and after options.
-    space         - space between selected text and selectchar
-    selectside    - specify what side do you want selecting arrows to be
-    selectchars   - specify what chars will appear before and after selected option
-    
-"""
+        """
+OptionSelctor is used for creating cmd menus
+:param (list,tuple) options: -> List of options you want user to choose from
+
+:optional(">","<")     param tuple selectchars: -> Characters showing before and after selected option (depending on selectside)
+:optional(1)           param int   space:       -> Space between option and selectchars
+:optional("")          param str   title:       -> Title of the menu, added on the top
+:optional(Sides.RIGHT) param Sides selectside:  -> Use Sides enum to specify where selectchars are going to be
+:optional("")          param str   footer:      -> Same as title, except it's after all options
+        """
         if space < 1: space = 1
         self.options = options
         self.selected = 0
@@ -65,8 +89,9 @@ class OptionSelector:
         self.title = title
         self.footer = footer
     def run(self):
-        """OptionSelector can be runned infinite amount of times.
-run() will block the main thread, and return index of selected option"""
+        """Start the option selector. It can be runned infinite amount of times. WARNING: It's blocking the main thread
+:return int: -> Index of selected option
+        """
         try: curses.initscr()
         except AttributeError:
             print("You can't open it from IDE!")
@@ -90,7 +115,9 @@ run() will block the main thread, and return index of selected option"""
             elif key in (curses.KEY_ENTER, 10, 13):
                 break
     def string(self):
-        """To string method"""
+        """To string method
+:return str: -> Get how the option selector would look like right now.
+        """
         updatestr = ""
         if self.title != "":
             updatestr += self.title + "\n"
@@ -121,6 +148,7 @@ run() will block the main thread, and return index of selected option"""
         updatestr += self.footer
         return updatestr
     def __limited(self, operation, variable, limit):
+        """Do not care about this method please"""
         if operation:
             if variable >= limit:
                 return 0
