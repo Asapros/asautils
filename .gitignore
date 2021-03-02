@@ -3,4 +3,3 @@ __pycache__/
 build/
 asautils.egg-info/
 dist/
-installconfig.json
