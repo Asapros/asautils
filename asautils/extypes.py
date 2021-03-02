@@ -15,8 +15,8 @@ Examples:
 
 class EXlist(list):
     def __str__(self):
-        """Returns "".join(self)"""
-        return "".join(self)
+        """Returns ", ".join(self)"""
+        return ", ".join(self)
     def get_items_by_attributes(self, attributedict: dict, limit=None):
         """Searching for items that matchs all requirments
 Example: get_items_by_attributes({"x":1, "y":2})
