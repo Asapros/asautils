@@ -1,12 +1,12 @@
 """
-See more help with "logger" or "cmdLogTypes"
+See more help with "Logger" or "CmdLogTypes"
 """
 import colorama
 from datetime import datetime
 
 colorama.init()
-class cmdLogTypes:
-    """Used by logger to display what kind of message is it"""
+class CmdLogTypes:
+    """Used by Logger to display what kind of message is it"""
     info = colorama.Fore.BLUE + "INFO" + colorama.Fore.RESET
     starting = colorama.Fore.CYAN + "STARTING" + colorama.Fore.RESET
     error = colorama.Fore.RED + "ERROR" + colorama.Fore.RESET
@@ -14,12 +14,12 @@ class cmdLogTypes:
     warning = colorama.Fore.YELLOW + "WARNING" + colorama.Fore.RESET
     debug = colorama.Fore.MAGENTA + "DEBUG" + colorama.Fore.RESET
 
-class logger:
+class Logger:
     """
 Will help you with visualizing what's happening in your code.
 All the methods are static so there's no need of creating an object.
 Examples:
-    logger.formatting = x
+    Logger.formatting = x
     -> You can set your own format of message. Those will be replaced:
         - {logtype} -> ERROR, SUCCESS, etc. Depending on the situation
         - {message} -> Your message
@@ -49,36 +49,36 @@ Examples:
             "time":f"{datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}",
             "timestamp":f"{datetime.timestamp(datetime.now())}"
             }
-        return logger.formatting.format(**formatdict)
+        return Logger.formatting.format(**formatdict)
     @staticmethod
     def log_print(logtype, message):
-        print(logger.get_text(logtype, message))
+        print(Logger.get_text(logtype, message))
     @staticmethod
     def error(message):
-        logger.log_print(cmdLogTypes.error, message)
+        Logger.log_print(CmdLogTypes.error, message)
     @staticmethod
     def warning(message):
-        logger.log_print(cmdLogTypes.warning, message)
+        Logger.log_print(CmdLogTypes.warning, message)
     @staticmethod
     def info(message):
-        logger.log_print(cmdLogTypes.info, message)
+        Logger.log_print(CmdLogTypes.info, message)
     @staticmethod
     def starting(message):
-        logger.log_print(cmdLogTypes.starting, message)
+        Logger.log_print(CmdLogTypes.starting, message)
     @staticmethod
     def success(message):
-        logger.log_print(cmdLogTypes.success, message)
+        Logger.log_print(CmdLogTypes.success, message)
     @staticmethod
     def debug(message):
-        logger.log_print(cmdLogTypes.debug, message)
+        Logger.log_print(CmdLogTypes.debug, message)
 
 # Run the script to see demo
 if __name__ == "__main__":
-    logger.formatting = "[{logtype}] ({date} | {time} | {timestamp}) > {message}"
-    logger.error("Your script crashed for no reason")
-    logger.warning("Your cookies aren't baked enough")
-    logger.success("Cookies succefully baked")
-    logger.starting("Preparing oven to bake cookies")
-    logger.info("You've eaten the cookie")
-    logger.debug("Hello World")
+    Logger.formatting = "[{logtype}] ({date} | {time} | {timestamp}) > {message}"
+    Logger.error("Your script crashed for no reason")
+    Logger.warning("Your cookies aren't baked enough")
+    Logger.success("Cookies succefully baked")
+    Logger.starting("Preparing oven to bake cookies")
+    Logger.info("You've eaten the cookie")
+    Logger.debug("Hello World")
     input()
