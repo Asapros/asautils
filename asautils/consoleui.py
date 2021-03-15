@@ -44,10 +44,10 @@ Formating string with colors. Tags:
 
 def tprint(text, mintime, maxtime, end="\n"):
     """Types text.
-    :param str text:    -> Text you want to print
-    :param int mintime: -> Minimal time (mills)
-    :param int maxtime: -> Maximal time (mills)
-    :optional("\n") param str end: -> Same as end in print()
+:param str text:    -> Text you want to print
+:param int mintime: -> Minimal time (mills)
+:param int maxtime: -> Maximal time (mills)
+:optional("\n") param str end: -> Same as end in print()
     """
     for char in text:
         print(char, end="", flush=True)
@@ -56,8 +56,8 @@ def tprint(text, mintime, maxtime, end="\n"):
 
 def type_print(text, end="\n"):
     """Types text stopping on: . , -
-    :param str text: -> Text you want to print
-    :optional("\n") param str end: -> Same as end in print()
+:param str text: -> Text you want to print
+:optional("\n") param str end: -> Same as end in print()
     """
     for char in text:
         print(char, end="", flush=False)
@@ -69,7 +69,7 @@ def type_print(text, end="\n"):
             sleep(randint(80,150)/1000)
     print(end, end="")
 class OptionSelector:
-    def __init__(self, options, selectchars = (">","<"), space=1, title="", selectside = Sides.RIGHT, footer=""):
+    def __init__(self, options, selectchars = (">","<"), space=2, title="", selectside = Sides.RIGHT, footer="", trigger=None):
         """
 OptionSelctor is used for creating cmd menus
 :param (list,tuple) options: -> List of options you want user to choose from
@@ -79,8 +79,14 @@ OptionSelctor is used for creating cmd menus
 :optional("")          param str   title:       -> Title of the menu, added on the top
 :optional(Sides.RIGHT) param Sides selectside:  -> Use Sides enum to specify where selectchars are going to be
 :optional("")          param str   footer:      -> Same as title, except it's after all options
+:optional(None)        param list  trigger:     -> List of methods. When option is selected a function will be triggered
         """
         if space < 1: space = 1
+        
+        self.trigger = False
+        if trigger is not None:
+            self.trigger = True
+            self.trigger_list = trigger
         self.options = options
         self.selected = 0
         self.space = space
@@ -91,6 +97,9 @@ OptionSelctor is used for creating cmd menus
     def run(self):
         """Start the option selector. It can be runned infinite amount of times. WARNING: It's blocking the main thread
 :return int: -> Index of selected option
+:return object: -> Return value of triggered function
+:raises IndexError: -> When trigger list is invalid (too short)
+:raises Exception:  -> Most likely error in trigger function
         """
         try: curses.initscr()
         except AttributeError:
@@ -101,7 +110,10 @@ OptionSelctor is used for creating cmd menus
         curses.curs_set(0)
         curses.wrapper(self.__key_listening)
         curses.endwin()
-        return self.selected
+        if self.trigger:
+            return self.trigger_list[self.selected]()
+        else:
+            return self.selected
     def __key_listening(self, screen):
         while True:
             screen.clear()
@@ -129,7 +141,6 @@ OptionSelctor is used for creating cmd menus
         if self.selectside in (Sides.LEFT, Sides.BOTH):
             padding[0] = " "*self.space
             selected_padding[0] = " "*(self.space-1) + self.selectchars[0]
-        
 
         def wrap(selected, option):
             if selected:
@@ -142,13 +153,11 @@ OptionSelctor is used for creating cmd menus
                 updatestr += wrap(True, self.options[option]) + "\n"
             else:
                 updatestr += wrap(False, self.options[option]) + "\n"
-            
-
 
         updatestr += self.footer
         return updatestr
     def __limited(self, operation, variable, limit):
-        """Do not care about this method please"""
+        """Do not care about this method please""" # TODO move selected_option to property
         if operation:
             if variable >= limit:
                 return 0
