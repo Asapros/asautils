@@ -25,22 +25,7 @@ class Sides(Enum):
     BOTH = 2
     # There will never be 'center' side cause it's too glitchy
 
-def format_colors(string):
-    """
-Formating string with colors. Tags:
-    {red}     -> start red     color
-    {green}   -> start green   color
-    {blue}    -> start blue    color
-    {cyan}    -> start cyan    color
-    {magenta} -> start magenta color
-    {yellow}  -> start yellow  color
-    #------------------------------#
-    {reset} -> end all colors
 
-:param  str string: -> String to format
-:return str: -> Returns colored string
-    """
-    return string.format(green=Fore.GREEN, reset=Fore.RESET, red=Fore.RED, blue=Fore.BLUE, cyan=Fore.CYAN, yellow=Fore.YELLOW, magenta=Fore.MAGENTA)
 
 def tprint(text, mintime, maxtime, end="\n"):
     """Types text.
@@ -125,7 +110,9 @@ OptionSelctor is used for creating cmd menus
             elif key == curses.KEY_DOWN:
                 self.selected = self.__limited(True, self.selected, len(self.options)-1)
             elif key in (curses.KEY_ENTER, 10, 13):
+                
                 break
+        screen.clear()
     def string(self):
         """To string method
 :return str: -> Get how the option selector would look like right now.

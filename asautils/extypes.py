@@ -12,7 +12,6 @@ Examples:
     >> False
 """
 
-
 class EXlist(list):
     def __str__(self):
         """Returns ", ".join(self)"""
@@ -113,6 +112,25 @@ class EXstr(str):
         for line in lines:
             string += start + line + end + "\n" 
         return string[:-1]
+    def format_colors(self):
+        """
+Formating string with colors. Tags:
+    {red}     -> start red     color
+    {green}   -> start green   color
+    {blue}    -> start blue    color
+    {cyan}    -> start cyan    color
+    {magenta} -> start magenta color
+    {yellow}  -> start yellow  color
+    #------------------------------#
+    {reset} -> end all colors
+
+:param  str string: -> String to format
+:return str: -> Returns colored string
+        """
+        from colorama import Fore, init
+        init()
+        return self.format(green=Fore.GREEN, reset=Fore.RESET, red=Fore.RED, blue=Fore.BLUE, cyan=Fore.CYAN, yellow=Fore.YELLOW, magenta=Fore.MAGENTA)
+    
 class EXint(int):
     def alphabet_char(self) ->str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
@@ -144,3 +162,4 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
+        
