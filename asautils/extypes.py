@@ -72,7 +72,7 @@ returns all objects with x=1 and y=2
             saw.append(item)
         return True
     def reversed(self):
-        return self.__reversed__()
+        return list(reversed(self))
 
 class EXstr(str):
     def alphabet_ords(self) -> list:
