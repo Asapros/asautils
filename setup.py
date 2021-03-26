@@ -1,5 +1,4 @@
 from setuptools import setup
-
 setup(
    name='asautils',
    version='1.0',
