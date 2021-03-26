@@ -16,7 +16,7 @@ class EXlist(list):
     def __str__(self):
         """Returns ", ".join(self)"""
         return ", ".join(self)
-    def get_items_by_attributes(self, attributedict: dict, limit=None):
+    def items_by_attributes(self, attributedict: dict, limit=None):
         """Searching for items that matchs all requirments
 Example: get_items_by_attributes({"x":1, "y":2})
 returns all objects with x=1 and y=2
@@ -35,7 +35,7 @@ returns all objects with x=1 and y=2
                 itemlist.append(item)
         return itemlist
 
-    def are_all_equal_to(self, value) -> bool:
+    def all_equal_to(self, value) -> bool:
         """Returns false if at least 1 element is not equal to value"""
         if len(self) <= 0:
             return False
@@ -43,7 +43,7 @@ returns all objects with x=1 and y=2
             if item != value:
                 return False
         return True
-    def are_all_equal(self) -> bool:
+    def all_equal(self) -> bool:
         """Returns true if at all elements are equal"""
         if len(self) <= 0:
             return False
@@ -53,7 +53,7 @@ returns all objects with x=1 and y=2
             if item != value:
                 return False
         return True
-    def are_all_different_from(self, value) -> bool:
+    def all_different_from(self, value) -> bool:
         """Returns false if at least 1 element is equal to value"""
         if len(self) <= 0:
             return False
@@ -61,17 +61,18 @@ returns all objects with x=1 and y=2
             if item == value:
                 return False
         return True
-    def are_all_different(self) -> bool:
+    def all_different(self) -> bool:
         """Returns true if all elements are different from others"""
-        if len(self) <= 0:
+        if len(self) <= 0: # TODO idea: Convert self to set, then check if its the same length than set. If true, then all elements were different
             return False
         saw = []
         for item in self:
             if item in saw:
                 return False
             saw.append(item)
-
         return True
+    def reversed(self):
+        return self.__reversed__
 
 class EXstr(str):
     def alphabet_ords(self) -> list:
@@ -132,7 +133,7 @@ Formating string with colors. Tags:
         return self.format(green=Fore.GREEN, reset=Fore.RESET, red=Fore.RED, blue=Fore.BLUE, cyan=Fore.CYAN, yellow=Fore.YELLOW, magenta=Fore.MAGENTA)
     
 class EXint(int):
-    def alphabet_char(self) ->str:
+    def alphabet_char(self) -> str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
             return None
@@ -149,9 +150,9 @@ class EXint(int):
             return 0
     def is_even(self) -> bool:
         """Returns True if number is even"""
-        return self / 2 == float(self//2)
+        return not self % 2
     def is_zero(self) -> bool:
-        return self == 0
+        return not self
     def is_power2(self) -> bool:
         """Returns True if number is a power of 2
 negative numbers not supported yet
