@@ -1,18 +1,18 @@
 """
 See more help with "Logger" or "CmdLogTypes"
 """
-import colorama
 from datetime import datetime
+from asautils.extypes import EXstr
 
-colorama.init()
+
 class CmdLogTypes:
     """Used by Logger to display what kind of message is it"""
-    info = colorama.Fore.BLUE + "INFO" + colorama.Fore.RESET
-    starting = colorama.Fore.CYAN + "STARTING" + colorama.Fore.RESET
-    error = colorama.Fore.RED + "ERROR" + colorama.Fore.RESET
-    success = colorama.Fore.GREEN + "SUCCESS" + colorama.Fore.RESET
-    warning = colorama.Fore.YELLOW + "WARNING" + colorama.Fore.RESET
-    debug = colorama.Fore.MAGENTA + "DEBUG" + colorama.Fore.RESET
+    info     = EXstr("{blue}INFO{reset}"     ).format_colors()
+    starting = EXstr("{cyan}STARTING{reset}" ).format_colors()
+    error    = EXstr("{red}ERROR{reset}"     ).format_colors()
+    success  = EXstr("{green}SUCCESS{reset}" ).format_colors()
+    warning  = EXstr("{yellow}WARNING{reset}").format_colors()
+    debug    = EXstr("{magenta}DEBUG{reset}" ).format_colors()
 
 class Logger:
     """
