@@ -12,6 +12,11 @@ Examples:
     >> False
 """
 
+from random   import choice as random_choice
+from colorama import Fore   as fore_colorama
+from colorama import init   as init_colorama
+from base64   import urlsafe_b64encode
+
 class EXlist(list):
     def __str__(self):
         """Returns ", ".join(self)"""
@@ -95,10 +100,9 @@ class EXstr(str):
         return total
     def randomcase(self) -> str:
         """rETUrnS CooL StRINg FoR cOol dUdes"""
-        from random import randint
         randomstr = ""
         for char in self:
-            if randint(0,1):
+            if random_choice([True, False]):
                 randomstr += char.upper()
             else:
                 randomstr += char.lower()
@@ -113,6 +117,7 @@ class EXstr(str):
         for line in lines:
             string += start + line + end + "\n" 
         return string[:-1]
+
     def format_colors(self):
         """
 Formating string with colors. Tags:
@@ -128,9 +133,8 @@ Formating string with colors. Tags:
 :param  str string: -> String to format
 :return str: -> Returns colored string
         """
-        from colorama import Fore, init
-        init()
-        return self.format(green=Fore.GREEN, reset=Fore.RESET, red=Fore.RED, blue=Fore.BLUE, cyan=Fore.CYAN, yellow=Fore.YELLOW, magenta=Fore.MAGENTA)
+        init_colorama()
+        return self.format(green=fore_colorama.GREEN, reset=fore_colorama.RESET, red=fore_colorama.RED, blue=fore_colorama.BLUE, cyan=fore_colorama.CYAN, yellow=fore_colorama.YELLOW, magenta=fore_colorama.MAGENTA)
     
 class EXint(int):
     def alphabet_char(self) -> str:
@@ -163,4 +167,3 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
-        
