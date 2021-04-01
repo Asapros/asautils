@@ -117,7 +117,14 @@ class EXstr(str):
         for line in lines:
             string += start + line + end + "\n" 
         return string[:-1]
-
+    def nlstrip(self):
+        def strip(string):
+            for char in string:
+                if char == "\n": string = string[1:]
+                else: break
+            return string
+        return strip(strip(self)[::-1])[::-1]
+        
     def format_colors(self):
         """
 Formating string with colors. Tags:
