@@ -88,7 +88,7 @@ OptionSelctor is used for creating cmd menus
         """
         try: curses.initscr()
         except AttributeError:
-            print("You can't open it from IDE!")
+            print("This terminal is not supporting cursor movement!")
             return
         curses.noecho()
         curses.cbreak()
@@ -127,7 +127,7 @@ OptionSelctor is used for creating cmd menus
             selected_padding[1] = " "*(self.space-1) + self.selectchars[1]
         if self.selectside in (Sides.LEFT, Sides.BOTH):
             padding[0] = " "*self.space
-            selected_padding[0] = " "*(self.space-1) + self.selectchars[0]
+            selected_padding[0] = self.selectchars[0] + " "*(self.space-1)
 
         def wrap(selected, option):
             if selected:
