@@ -53,6 +53,7 @@ def type_print(text, end="\n"):
         else:
             sleep(randint(80,150)/1000)
     print(end, end="")
+
 class OptionSelector:
     def __init__(self, options, selectchars = (">","<"), space=2, title="", selectside = Sides.RIGHT, footer="", trigger=None):
         """
@@ -73,7 +74,7 @@ OptionSelctor is used for creating cmd menus
             self.trigger = True
             self.trigger_list = trigger
         self.options = options
-        self.selected = 0
+        self._selected = 0
         self.space = space
         self.selectside = selectside
         self.selectchars = selectchars
@@ -86,6 +87,20 @@ OptionSelctor is used for creating cmd menus
 :raises IndexError: -> When trigger list is invalid (too short)
 :raises Exception:  -> Most likely error in trigger function
         """
+        def key_listening(screen):
+            while True:
+                screen.clear()
+                screen.addstr(self.string())
+                key = screen.getch()
+                screen.refresh()
+                if key == curses.KEY_UP:
+                    self.selected -= 1
+                elif key == curses.KEY_DOWN:
+                    self.selected += 1
+                elif key in (curses.KEY_ENTER, 10, 13):
+                    break
+            screen.clear()
+            
         try: curses.initscr()
         except AttributeError:
             print("This terminal is not supporting cursor movement!")
@@ -93,26 +108,12 @@ OptionSelctor is used for creating cmd menus
         curses.noecho()
         curses.cbreak()
         curses.curs_set(0)
-        curses.wrapper(self.__key_listening)
+        curses.wrapper(key_listening)
         curses.endwin()
         if self.trigger:
             return self.trigger_list[self.selected]()
         else:
             return self.selected
-    def __key_listening(self, screen):
-        while True:
-            screen.clear()
-            screen.addstr(self.string())
-            key = screen.getch()
-            screen.refresh()
-            if key == curses.KEY_UP:
-                self.selected = self.__limited(False, self.selected, len(self.options)-1)
-            elif key == curses.KEY_DOWN:
-                self.selected = self.__limited(True, self.selected, len(self.options)-1)
-            elif key in (curses.KEY_ENTER, 10, 13):
-                
-                break
-        screen.clear()
     def string(self):
         """To string method
 :return str: -> Get how the option selector would look like right now.
@@ -143,15 +144,11 @@ OptionSelctor is used for creating cmd menus
 
         updatestr += self.footer
         return updatestr
-    def __limited(self, operation, variable, limit):
-        """Do not care about this method please""" # TODO move selected_option to property
-        if operation:
-            if variable >= limit:
-                return 0
-            else:
-                return variable + 1
-        else:
-            if variable <= 0:
-                return limit
-            else:
-                return variable - 1
+    @property
+    def selected(self): return self._selected
+    @selected.setter
+    def selected(self, value):
+        """Setter that will not let you select an option that doesn't exist"""
+        if value > len(self.options)-1: self._selected = 0
+        elif value < 0: self._selected = len(self.options)-1
+        else: self._selected = value
