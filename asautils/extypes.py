@@ -174,3 +174,13 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
+
+class EXdict(dict):
+    @property
+    def keys(self):
+        """'Fixed' version of dict.keys (It's a property, not a method)"""
+        return list(super().keys())
+    @property
+    def values(self):
+        """'Fixed' version of dict.values (It's a property, not a method)"""
+        return list(super().values())
