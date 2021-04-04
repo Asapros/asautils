@@ -82,21 +82,17 @@ returns all objects with x=1 and y=2
     def all_different_from(self, value) -> bool:
         """Returns false if at least 1 element is equal to value"""
         if len(self) <= 0:
-            return False
+            return True
         for item in self:
             if item == value:
                 return False
         return True
     def all_different(self) -> bool:
-        """Returns true if all elements are different from others"""
-        if len(self) <= 0: # TODO idea: Convert self to set, then check if its the same length than set. If true, then all elements were different
-            return False
-        saw = []
-        for item in self:
-            if item in saw:
-                return False
-            saw.append(item)
-        return True
+        """Returns true if all elements are different"""
+        if len(self) <= 0:
+            return True
+        to_set = set(self)
+        return len(to_set) == len(self)
     def reversed(self):
         return list(reversed(self))
 
