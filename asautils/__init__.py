@@ -7,8 +7,7 @@ on my repo: https://github.com/Asapros/asautils/
 
 from asautils import consoleui
 from asautils import extypes
-from asautils import gamebase
 from asautils import logger
 __all__ = [
-    "consoleui", "extypes", "gamebase", "logger"
+    "consoleui", "extypes", "logger"
     ]
