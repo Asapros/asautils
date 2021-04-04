@@ -22,6 +22,21 @@ class EXobject(object):
     def copy(self):
         """Returns deepcopy of self"""
         return deepcopy(self)
+    def assign_attr(self, func):
+        """Decorator to assign function or inner class to the object.
+Remember that the function will be static so don't put self as an argument
+Example::
+    obj = EXobj()
+
+    @obj.assign_attr
+    def my_func():
+        print("Hello world")
+
+    obj.my_func()
+    >>> Hello world
+"""
+        setattr(self, func.__name__, func)
+        return func
 
 class EXlist(EXobject, list):
     def __str__(self):
