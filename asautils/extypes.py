@@ -2,13 +2,13 @@
 This modules are extensions of python built-in types.
 
 Examples:
-    EXlist(["a", "a", "a", "a"]).are_all_equal()
+    List(["a", "a", "a", "a"]).are_all_equal()
     >> True
     
-    EXstr("Hello world").randomcase()
+    Str("Hello world").randomcase()
     >> HeLlO wOrlD
     
-    EXint(15).is_even()
+    Int(15).is_even()
     >> False
 """
 
@@ -18,7 +18,7 @@ from colorama import init   as init_colorama
 from base64   import urlsafe_b64encode
 from copy     import deepcopy
 
-class EXobject(object):
+class Object(object):
     def copy(self):
         """Returns deepcopy of self"""
         return deepcopy(self)
@@ -38,7 +38,7 @@ Example::
         setattr(self, func.__name__, func)
         return func
 
-class EXlist(EXobject, list):
+class List(Object, list):
     def __str__(self):
         """Returns ", ".join(self)"""
         return ", ".join(self)
@@ -96,7 +96,7 @@ returns all objects with x=1 and y=2
     def reversed(self):
         return list(reversed(self))
 
-class EXstr(EXobject, str):
+class Str(Object, str):
     def alphabet_ords(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
         numbers = []
@@ -161,7 +161,7 @@ Formating string with colors. Tags:
         init_colorama()
         return self.format(green=fore_colorama.GREEN, reset=fore_colorama.RESET, red=fore_colorama.RED, blue=fore_colorama.BLUE, cyan=fore_colorama.CYAN, yellow=fore_colorama.YELLOW, magenta=fore_colorama.MAGENTA)
     
-class EXint(EXobject, int):
+class Int(Object, int):
     def alphabet_char(self) -> str:
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
@@ -193,7 +193,7 @@ negative numbers not supported yet
             number = number**2
         return False
 
-class EXdict(EXobject, dict):
+class Dict(Object, dict):
     @property
     def keys(self):
         """'Fixed' version of dict.keys (It's a property, not a method)"""
