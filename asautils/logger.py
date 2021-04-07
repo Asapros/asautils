@@ -2,17 +2,17 @@
 See more help with "Logger" or "CmdLogTypes"
 """
 from datetime import datetime
-from asautils.extypes import EXstr
+from asautils.extypes import Str
 
 
 class CmdLogTypes:
     """Used by Logger to display what kind of message is it"""
-    info     = EXstr("{blue}INFO{reset}"     ).format_colors()
-    starting = EXstr("{cyan}STARTING{reset}" ).format_colors()
-    error    = EXstr("{red}ERROR{reset}"     ).format_colors()
-    success  = EXstr("{green}SUCCESS{reset}" ).format_colors()
-    warning  = EXstr("{yellow}WARNING{reset}").format_colors()
-    debug    = EXstr("{magenta}DEBUG{reset}" ).format_colors()
+    info     = Str("{blue}INFO{reset}"     ).format_colors()
+    starting = Str("{cyan}STARTING{reset}" ).format_colors()
+    error    = Str("{red}ERROR{reset}"     ).format_colors()
+    success  = Str("{green}SUCCESS{reset}" ).format_colors()
+    warning  = Str("{yellow}WARNING{reset}").format_colors()
+    debug    = Str("{magenta}DEBUG{reset}" ).format_colors()
 
 class Logger:
     """
