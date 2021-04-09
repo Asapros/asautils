@@ -1,8 +1,13 @@
 from setuptools import setup
 from platform import system
 
-curses_name = "curses"
-if system() == "Windows": curses_name = "windows-curses"
+needed_packages = ['colorama']
+
+
+if system() == "Windows":
+    needed_packages.append("windows-curses")
+elif system() != "Linux":
+    needed_packages.append("curses")
 
 setup(
    name='asautils',
@@ -10,5 +15,5 @@ setup(
    description='A useful python package',
    author='Asapros',
    packages=['asautils'],
-   install_requires=['colorama', curses_name]
+   install_requires=needed_packages
 )
