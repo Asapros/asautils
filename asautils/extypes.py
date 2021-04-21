@@ -15,7 +15,7 @@ Examples:
 from random import choice as random_choice
 from colorama import Fore as ColoramaFore, init as init_colorama
 from copy import deepcopy
-
+from hashlib import sha256
 
 class Object(object):
     def copy(self) -> object:
@@ -103,6 +103,10 @@ class Str(Object, str):
             else:
                 numbers.append(None)
         return numbers
+
+    def hash(self):
+        """Returns hex sha256 of the string (utf-8 encoding)"""
+        return sha256(self.encode("utf-8")).hexdigest()
     
     def base25_value(self) -> int:
         """Returns base25 value of string (a=0)"""
@@ -204,6 +208,15 @@ negative numbers not supported yet
                 return True
             number = number**2
         return False
+
+    def rotr(self, positions): # Coming soon
+        """Rotates bits right"""
+        pass
+    
+    def rotl(self, positions): # Coming soon
+        """Rotates bits left"""
+        pass
+
 
 
 class Dict(Object, dict):
