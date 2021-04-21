@@ -43,10 +43,7 @@ returns all objects with x=1 and y=2
         for item in self:
             results = []
             for attribute in list(attributedict):
-                if hasattr(item, attribute) and getattr(item, attribute) == attributedict[attribute]:
-                    results.append(True)
-                else:
-                    results.append(False)
+                results.append(hasattr(item, attribute) and getattr(item, attribute) == attributedict[attribute])
             if limit is not None and len(itemlist) >= limit:
                 break
             if all(results):
@@ -66,8 +63,7 @@ returns all objects with x=1 and y=2
         """Returns true if at all elements are equal"""
         if len(self) <= 0:
             return False
-        else:
-            value = self[0]
+        value = self[0]
         for item in self:
             if item != value:
                 return False
@@ -98,10 +94,11 @@ class Str(Object, str):
         """Returns list of char ords in alphabet (a=0)"""
         numbers = []
         for char in self:
-            if ord(char.upper()) in range(65, 91):
-                numbers.append(ord(char.upper())-65)
-            else:
+            if ord(char.upper()) not in range(65, 91):
                 numbers.append(None)
+                continue
+            numbers.append(ord(char.upper())-65)
+                
         return numbers
 
     def hash(self):
@@ -124,8 +121,8 @@ class Str(Object, str):
         for char in self:
             if random_choice([True, False]):
                 randomstr += char.upper()
-            else:
-                randomstr += char.lower()
+                continue
+            randomstr += char.lower()
         return randomstr
     
     def reverse(self) -> str:
@@ -139,17 +136,6 @@ class Str(Object, str):
         for line in lines:
             string += start + line + end + "\n" 
         return string[:-1]
-    
-    def nlstrip(self) -> str:
-        """Something like strip, but from newlines"""
-        def strip(string):
-            for char in string:
-                if char == "\n":
-                    string = string[1:]
-                else:
-                    break
-            return string
-        return strip(strip(self)[::-1])[::-1]
         
     def format_colors(self) -> str:
         """
@@ -180,8 +166,7 @@ class Int(Object, int):
         """Returns char thats in alphabet at ord of value 'self' (a=0)"""
         if self < 0 or self > 25:
             return None
-        else:
-            return chr(self+65)
+        return chr(self+65)
         
     def flip(self) -> float:
         """Returns flipped value (Fraction calculated by 1/self). Can handle 0"""
