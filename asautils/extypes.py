@@ -229,3 +229,25 @@ class Dict(Object, dict):
     def values(self) -> list:
         """'Fixed' version of dict.values (It's a property, not a method)"""
         return list(super().values())
+
+class Vector2(Object, tuple):
+    def __new__(cls, x, y):
+        return tuple.__new__(cls, (x,y))
+    @property
+    def x(self): return self[0]
+    @property
+    def y(self): return self[1]
+    def __add__(self, other):
+        if not isinstance(other, self.__class__): raise TypeError("You can only add vector to vector!")
+        return self.__class__(self[0]+other[0], self[1]+other[1])
+    def __sub__(self, other):
+        if not isinstance(other, self.__class__): raise TypeError("You can only subtract vector with vector!")
+        return self.__class__(self[0]-other[0], self[1]-other[1])
+    def __mul__(self, other):
+        if not isinstance(other, self.__class__):
+            return self.__class__(self[0]*other, self[1]*other)
+        return self.__class__(self[0]*other[0], self[1]*other[1])
+    def __neg__(self):
+        return self.__class__(-self[0], -self[1])
+    def __repr__(self):
+        return "(x:%s, y:%s)" % (self[0], self[1])
