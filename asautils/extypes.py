@@ -58,6 +58,12 @@ returns all objects with x=1 and y=2
             if item != value:
                 return False
         return True
+
+    def get(self, index):
+        try:
+            return self[index]
+        except IndexError:
+            return
     
     def all_equal(self) -> bool:
         """Returns true if at all elements are equal"""
