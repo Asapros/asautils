@@ -18,20 +18,22 @@ from copy import deepcopy
 from hashlib import sha256
 
 class Object(object):
-    def copy(self) -> object:
+    def deepcopy(self) -> object:
         """Returns deepcopy of self"""
         return deepcopy(self)
 
-    def assign_attr(self, func):
-        """Decorator used to assingn attribute to an object"""
-        setattr(self, func.__name__, func)
-        return func
-
-
 class List(Object, list):
     def __str__(self) -> str:
-        """Returns ", ".join(self)"""
-        return ", ".join(self)
+        """Returns human-readable string, use repr() if you don't like it"""
+        string = ""
+        for element in self:
+            string += str(element)
+            if element is self[-1]: break
+            if len(self) > 1 and element is self[-2]:
+                string += " and "
+                continue
+            string += ", "
+        return string
     
     def items_by_attributes(self, attributedict: dict, limit: int = None) -> list:
         """
@@ -59,11 +61,12 @@ returns all objects with x=1 and y=2
                 return False
         return True
 
-    def get(self, index):
+    def get(self, index, default=None):
+        """Get list element with default value"""
         try:
             return self[index]
         except IndexError:
-            return
+            return default
     
     def all_equal(self) -> bool:
         """Returns true if at all elements are equal"""
@@ -93,7 +96,6 @@ returns all objects with x=1 and y=2
     
     def reversed(self):
         return list(reversed(self))
-
 
 class Str(Object, str):
     def alphabet_ords(self) -> list:
@@ -202,13 +204,11 @@ negative numbers not supported yet
 
     def rotr(self, positions): # Coming soon
         """Rotates bits right"""
-        pass
+        raise NotImplementedError
     
     def rotl(self, positions): # Coming soon
         """Rotates bits left"""
-        pass
-
-
+        raise NotImplementedError
 
 class Dict(Object, dict):
     @property
