@@ -112,7 +112,15 @@ class Str(Object, str):
     def hash(self):
         """Returns hex sha256 of the string (utf-8 encoding)"""
         return sha256(self.encode("utf-8")).hexdigest()
-    
+    def plural(self):
+        """Returns plural form of the word"""
+        string = self
+        if string.endswith("s"):
+            string += "e"
+        elif string.endswith("y"):
+            string = string[:-1]+"ie"
+        return string + "s"
+        
     def base25_value(self) -> int:
         """Returns base25 value of string (a=0)"""
         total = 0
@@ -167,7 +175,6 @@ Formating string with colors. Tags:
             yellow=ColoramaFore.YELLOW,
             magenta=ColoramaFore.MAGENTA
         )
-
 
 class Int(Object, int):
     def alphabet_char(self):
