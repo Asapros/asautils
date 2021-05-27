@@ -1,57 +1,78 @@
 """
-a socket wrapper
+Socket wrapper
 """
-
+# TODO add logging
 import socket
-from pickle import loads, dumps
+from json import loads, dumps
 from datetime import datetime
 from threading import Thread
-from asautils.logger import Logger
-from copy import copy
+from asautils.extypes import List
+
+
+class ClientError(Exception):
+    """Errors caused serverside by client's mistake (Too less data etc.)"""
+    pass
+
+class UnknownPacket(ClientError):
+    def __init__(self, packet_id):
+        super().__init__("Packed with id %d is not supported by the server" % packet_id)
+
+class TooLessData(ClientError):
+    def __init__(self, required):
+        super().__init__("Your request is missing %d argument(s): %s" % (len(required), List(required)))
+
+class InvalidData(ClientError, ValueError):
+    def __init__(self, argument):
+        super().__init__("Data in '%s' is invalid!")
 
 class Client:
-    def __init__(self, host="127.0.0.1", port=4949, headerlen=16):
+    PACKET_IDS = {
+        "disconnect":0,
+        "ping":1
+        }
+    def __init__(self, host, port=4949, headerlen=16):
         self.host = host
         self.port = port
         self.header = headerlen
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-    def send(self, data):
-        """Send the data. If your sending a dict, remember to pickle it first!
-        """
+    def send(self, json):
+        """Send the data"""
+        data = dumps(json)
         datalen = len(data)
-        header = str(datalen) + " "*(self.header-len(str(datalen)))
-        self.socket.send(header.encode("utf-8")+data)
+        header = datalen.to_bytes(self.header, "big")
+        
+        self.socket.send(header+data.encode("utf-8"))
+
+    def send_packet(self, packet_id, data={}):
+        self.send({"request":packet_id, **data})
         
     def recv(self):
         """Wait for the server to respond with data"""
-        msglen = int(self.socket.recv(self.header))
-        msg = self.socket.recv(msglen)
-        return msg
+        datalen = int.from_bytes(self.socket.recv(self.header), "big")
+        data = self.socket.recv(datalen)
+        json = loads(data)
+        return json
     
-    def send_data(self, data):
-        """
-Passing the data to server.on_data_recv
-In most cases you should use this instead of normal send.
-        """
-        self.send(dumps({"action":2, "data":data}))
-        
     def disconnect(self):
-        """Sending to the server quick {"action":0} to tell it you want to abort connection."""
-        self.send(dumps({"action":0}))
+        """Sending to the server disconnection packet"""
+        self.send_packet(PACKET_IDS["disconnect"])
+        self.socket.close()
         
     def ping(self):
         """
 Sending to the server current timestamp.
-It will respond with it's timestamp so we can calculate how many time it took to send and then recieve the message
+It will respond with time it took for packet to get recieved
         """
         timestamp = datetime.timestamp(datetime.now())
-        self.send(dumps({"action":1, "timestamp":timestamp}))
-        return loads(self.recv())["timestamp"] - timestamp
+        self.send_packet(PACKET_IDS["ping"], {"timestamp":timestamp})
+        response = self.recv()
+
+        return response["diff"]
     
     def connect(self):
         """
-Connect to the host you passed in __init__
+Connect to the host you passed in constructor
         """
         self.socket.connect((self.host, self.port))
 
@@ -61,67 +82,89 @@ class Server:
         self.port = port
         self.header = headerlen
         self.clients = set()
+        self.request_handlers = {0:self._handle_disconnect, 1:self._handle_ping}
+        self.error_handling = self._handle_error
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.host, self.port))
 
-    def send(self, data, conn):
-        """Send the data to connected client"""
-        datalen = len(data)
-        header = str(datalen) + " "*(self.header-len(str(datalen)))
-        conn.send(header.encode("utf-8")+data)
+    def _handle_error(self, conn, exception):
+        exception_cause = exception.args[0] if exception.args else exception.__class__.__name__
+        self.send_packet(False, 0, {"error":exception_cause}, conn)
+        if isinstance(exception, ClientError):
+            return
+        raise exception
+
+    def _handle_disconnect(self, conn, _):
+        conn.close()
+
+    def _handle_ping(self, conn, data):
+        client_time = data.get("timestamp")
+        if client_time is None:
+            raise TooLessData({"timestamp"})
+        if not isinstance(client_time, int):
+            raise InvalidData("timestamp")
         
+        self.send_packet(True, 0, {"diff":datetime.timestamp(datetime.now())-client_time}, conn)
+
+    def request_handler(self, packet_id):
+        def wrapper(func):
+            self.request_handlers[packet_id] = func
+            return func
+        return wrapper
+
+    def error_handler(self, func):
+        self.error_handling = func
+        return func
+        
+            
+    
+    def send(self, json, conn):
+        """Send the data"""
+        data = dumps(json)
+        datalen = len(data)
+        header = datalen.to_bytes(self.header, "big")
+
+        conn.send(header+data.encode("utf-8"))
+
+    def send_packet(self, success, packet_type, data, conn):
+        self.send({"success":success, "type":packet_type, "data":data}, conn)
+    
     def recv(self, conn):
         """Recieve data from client"""
-        msglen = int(conn.recv(self.header))
-        msg = conn.recv(msglen)
-        return msg
+        datalen = int.from_bytes(conn.recv(self.header), "big")
+        data = conn.recv(datalen)
+        json = loads(data)
+        return json
 
     def listen(self):
         """Loop of the server, it will wait for clients and handle them forever."""
         self.socket.listen()
-        threads = set()
         while True:
-            for thread in copy(threads):
-                if not thread.isAlive():
-                    thread.join()
-                    threads.remove(thread)
-            thread = Thread(target=self.handle_client, args=self.socket.accept())
+            conn, _ = self.socket.accept()
+            thread = Thread(target=self.handle_client, args=(conn,))
             thread.start()
-            threads.add(thread)
-
-    def on_data_recv(self, conn, addr, data):
-        print("%s:%d sends: %s" % (*addr, data))
     
-    def handle_action(self, conn, addr, data):
+    def handle_request(self, conn, data):
         """Handles clients request"""
-        action = data["action"]
-        if action == 0: # DISCONNECT
-            conn.close()
-        elif action == 1: # PING
-            self.send(dumps({"timestamp":datetime.timestamp(datetime.now())}), conn)
-        elif action == 2: # DATA
-            self.on_data_recv(conn, addr, data["data"])
+        action = data.get("request")
+        function = self.request_handlers.get(action)
+        if function is None:
+            raise UnknownPacket(action)
+        function(conn, data)
 
-    def on_client_connect(self, conn, addr):
-        """Called when client connected"""
-        Logger.info("Handling new client: %s:%d" % addr)
+        
+    def handle_client(self, conn):
+        """Loop of handling the client"""
+        conn_ip, conn_port = conn.getsockname()
+
         self.clients.add(conn)
-
-    def on_client_disconnect(self, conn, addr):
-        """Called when client disconnected"""
-        Logger.info("%s:%d disconnected" % addr)
+        while True:
+            try: data = self.recv(conn)
+            except (Exception):
+                break
+            try:
+                self.handle_request(conn,data)
+            except Exception as exception:
+                self.error_handling(conn, exception)
         self.clients.remove(conn)
         conn.close()
-        
-    def handle_client(self, conn, addr):
-        """Loop of handling the client"""
-        self.on_client_connect(conn, addr)
-        while True:
-            try: data = loads(self.recv(conn))
-            except (ConnectionResetError, ValueError, OSError):
-                break # Connection no longer exists, or for example wrong header is passed
-            if "action" in data.keys():
-                self.handle_action(conn,addr,data)
-            else:
-                self.send(dumps({"error":"No 'action' key in recieved data"}), conn)
-        self.on_client_disconnect(conn, addr)
