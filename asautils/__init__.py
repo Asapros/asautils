@@ -11,5 +11,5 @@ from asautils import logger
 from asautils import sockets
 
 __all__ = [
-    "consoleui", "extypes", "logger", "sockets"
+    "consoleui", "extypes", "logger"
     ]
