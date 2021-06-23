@@ -8,7 +8,8 @@ on my repo: https://github.com/Asapros/asautils/
 from asautils import consoleui
 from asautils import extypes
 from asautils import logger
+from asautils import database
 
 __all__ = [
-    "consoleui", "extypes", "logger"
+    "consoleui", "extypes", "logger", "database"
     ]
