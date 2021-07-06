@@ -5,11 +5,8 @@ you can checkout README.md, setup.py and LICENSE
 on my repo: https://github.com/Asapros/asautils/
 """
 
-from asautils import consoleui
-from asautils import extypes
-from asautils import logger
-from asautils import database
+from asautils import consoleui, extypes, database, l3p, logger
 
 __all__ = [
-    "consoleui", "extypes", "logger", "database"
+    "consoleui", "extypes", "database", "l3p", "logger"
     ]

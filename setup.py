@@ -1,12 +1,12 @@
 from setuptools import setup
 from platform import system
 
-needed_packages = ['colorama']
+needed_packages = ['colorama', 'leb128']
 
 
 if system() == "Windows":
     needed_packages.append("windows-curses")
-elif system() != "Linux":
+else:
     needed_packages.append("curses")
 
 setup(
