@@ -6,8 +6,6 @@ needed_packages = ['colorama', 'leb128']
 
 if system() == "Windows":
     needed_packages.append("windows-curses")
-else:
-    needed_packages.append("curses")
 
 setup(
    name='asautils',
