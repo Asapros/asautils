@@ -22,8 +22,9 @@ Currently you can only use TCP, maybe UDP will added
         """
 Recieve a single packet
         """
+        stream = self.makefile("rb", buffering=0)
         try:
-            packet_length, _ = unsigned_leb128.decode_reader(self)
+            packet_length, _ = unsigned_leb128.decode_reader(stream)
         except TypeError:
             return b""
         data = socket.recv(self, packet_length)
