@@ -32,11 +32,12 @@ TYPES_NO_COLOR = {
     }
 
 class Logger:
-    def __init__(self, colors = True, format = "[{logtype}] -> {message}"):
+    def __init__(self, name = "???", colors = True, format = "[{logtype}] -> {message}"):
         if colors:
             init_colorama()
         self.type_style = TYPES_COLOR if colors else TYPES_NO_COLOR
         self.format = format
+        self.name = name
 
     def get_text(self, logtype, message: str) -> str:
         logtype_string = self.type_style.get(logtype, str(logtype))
@@ -44,33 +45,34 @@ class Logger:
         formatdict = {
             "logtype":logtype_string,
             "message":message,
+            "name":self.name,
             "date":f"{now.strftime('%d/%m/%Y')}",
             "time":f"{now.strftime('%H:%M:%S')}",
             "timestamp":f"{datetime.timestamp(now)}"
             }
-        return self.format.format(**formatdict) + "\n"
+        return self.format.format(**formatdict)
 
     def error(self, message):
-        stdout.write(self.get_text(LogTypes.ERROR, message))
+        print(self.get_text(LogTypes.ERROR, message))
 
     def warning(self, message):
-        stdout.write(self.get_text(LogTypes.WARNING, message))
+        print(self.get_text(LogTypes.WARNING, message))
 
     def info(self, message):
-        stdout.write(self.get_text(LogTypes.INFO, message))
+        print(self.get_text(LogTypes.INFO, message))
 
     def success(self, message):
-        stdout.write(self.get_text(LogTypes.SUCCESS, message))
+        print(self.get_text(LogTypes.SUCCESS, message))
 
     def debug(self, message):
-        stdout.write(self.get_text(LogTypes.DEBUG, message))
+        print(self.get_text(LogTypes.DEBUG, message))
 
 # Run the script to see demo
 if __name__ == "__main__":
-    logger = Logger(colors = False, format = "[{logtype}] ({date} | {time} | {timestamp}) > {message}")
+    logger = Logger(colors = True, format = "[{logtype}] ({date} | {time} | {timestamp}) > {message}")
     logger.error("Your script crashed for no reason")
     logger.warning("Your cookies aren't baked enough")
     logger.success("Cookies succefully baked")
-    logger.info("You've eaten the cookie")
+    logger.info("You've eaten a cookie")
     logger.debug("Hello World")
     input()
