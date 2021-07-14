@@ -1,5 +1,5 @@
 """
-This modules are extensions of python built-in types.
+This module extends some of python built-in types and also adds new ones
 
 Examples:
     List(["a", "a", "a", "a"]).are_all_equal()
@@ -13,14 +13,10 @@ Examples:
 """
 
 from random import choice as random_choice
-from colorama import Fore as ColoramaFore, init as init_colorama
-from copy import deepcopy
+from colorama import Fore as ColoramaFore
 from hashlib import sha256
 
-class Object(object):
-    def deepcopy(self) -> object:
-        """Returns deepcopy of self"""
-        return deepcopy(self)
+class Object(object): pass
 
 class List(Object, list):
     def __str__(self) -> str:
@@ -97,6 +93,9 @@ returns all objects with x=1 and y=2
     def reversed(self):
         return list(reversed(self))
 
+    def register(self): # Coming soon
+        raise NotImplemented
+
 class Str(Object, str):
     def alphabet_ords(self) -> list:
         """Returns list of char ords in alphabet (a=0)"""
@@ -165,7 +164,6 @@ Formating string with colors. Tags:
     #------------------------------#
     {reset} -> end all colors
         """
-        init_colorama()
         return self.format(
             green=ColoramaFore.GREEN,
             reset=ColoramaFore.RESET,
