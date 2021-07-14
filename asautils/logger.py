@@ -1,84 +1,76 @@
 """
-See more help with "Logger" or "CmdLogTypes"
+Makes your console logs look a little bit more prettier
+See more help in Logger class
 """
 from datetime import datetime
 from asautils.extypes import Str
+from enum import Enum
+from colorama import init as init_colorama
+from sys import stdout
 
+class LogTypes(Enum):
+    INFO = 0
+    ERROR = 1
+    SUCCESS = 2
+    WARNING = 3
+    DEBUG = 4
 
-class CmdLogTypes:
-    """Used by Logger to display what kind of message is it"""
-    info     = Str("{blue}INFO{reset}"     ).format_colors()
-    starting = Str("{cyan}STARTING{reset}" ).format_colors()
-    error    = Str("{red}ERROR{reset}"     ).format_colors()
-    success  = Str("{green}SUCCESS{reset}" ).format_colors()
-    warning  = Str("{yellow}WARNING{reset}").format_colors()
-    debug    = Str("{magenta}DEBUG{reset}" ).format_colors()
+TYPES_COLOR = {
+    LogTypes.INFO: Str.format_colors("{blue}INFO{reset}"),
+    LogTypes.ERROR: Str.format_colors("{red}ERROR{reset}"),
+    LogTypes.SUCCESS: Str.format_colors("{green}SUCCESS{reset}"),
+    LogTypes.WARNING: Str.format_colors("{yellow}WARNING{reset}"),
+    LogTypes.DEBUG: Str.format_colors("{magenta}DEBUG{reset}")
+    }
+
+TYPES_NO_COLOR = {
+    LogTypes.INFO: "INFO",
+    LogTypes.ERROR: "ERROR",
+    LogTypes.SUCCESS: "SUCCESS",
+    LogTypes.WARNING: "WARNING",
+    LogTypes.DEBUG: "DEBUG"
+    }
 
 class Logger:
-    """
-Will help you with visualizing what's happening in your code.
-All the methods are static so there's no need of creating an object.
-Examples:
-    Logger.formatting = x
-    -> You can set your own format of message. Those will be replaced:
-        - {logtype} -> ERROR, SUCCESS, etc. Depending on the situation
-        - {message} -> Your message
-        - {date} -> year-month-day format
-        - {time} -> hour-minute-second (I belive that datetime can handle time zones automaticly)
-        - {timestamp} -> timestamp
-    -> If you're always using one format you can change 'formatting' permamently here
-    
-    log_print(logtype, message)
-    -> Showing text in the console
-    
-    error(message)
-    warning(message)
-    info(message)
-    starting(message)
-    success(message)
-    debug(message)
-    -> I belive that i don't have to explain those
-    """
-    formatting = "[{logtype}] > {message}"
-    @staticmethod
-    def get_text(logtype, message):
+    def __init__(self, colors = True, format = "[{logtype}] -> {message}"):
+        if colors:
+            init_colorama()
+        self.type_style = TYPES_COLOR if colors else TYPES_NO_COLOR
+        self.format = format
+
+    def get_text(self, logtype, message: str) -> str:
+        logtype_string = self.type_style.get(logtype, str(logtype))
+        now = datetime.now()
         formatdict = {
-            "logtype":logtype,
+            "logtype":logtype_string,
             "message":message,
-            "date":f"{datetime.now().year}-{datetime.now().month}-{datetime.now().day}",
-            "time":f"{datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}",
-            "timestamp":f"{datetime.timestamp(datetime.now())}"
+            "date":f"{now.strftime('%d/%m/%Y')}",
+            "time":f"{now.strftime('%H:%M:%S')}",
+            "timestamp":f"{datetime.timestamp(now)}"
             }
-        return Logger.formatting.format(**formatdict)
-    @staticmethod
-    def log_print(logtype, message):
-        print(Logger.get_text(logtype, message))
-    @staticmethod
-    def error(message):
-        Logger.log_print(CmdLogTypes.error, message)
-    @staticmethod
-    def warning(message):
-        Logger.log_print(CmdLogTypes.warning, message)
-    @staticmethod
-    def info(message):
-        Logger.log_print(CmdLogTypes.info, message)
-    @staticmethod
-    def starting(message):
-        Logger.log_print(CmdLogTypes.starting, message)
-    @staticmethod
-    def success(message):
-        Logger.log_print(CmdLogTypes.success, message)
-    @staticmethod
-    def debug(message):
-        Logger.log_print(CmdLogTypes.debug, message)
+        return self.format.format(**formatdict) + "\n"
+
+    def error(self, message):
+        stdout.write(self.get_text(LogTypes.ERROR, message))
+
+    def warning(self, message):
+        stdout.write(self.get_text(LogTypes.WARNING, message))
+
+    def info(self, message):
+        stdout.write(self.get_text(LogTypes.INFO, message))
+
+    def success(self, message):
+        stdout.write(self.get_text(LogTypes.SUCCESS, message))
+
+    def debug(self, message):
+        stdout.write(self.get_text(LogTypes.DEBUG, message))
 
 # Run the script to see demo
 if __name__ == "__main__":
-    Logger.formatting = "[{logtype}] ({date} | {time} | {timestamp}) > {message}"
-    Logger.error("Your script crashed for no reason")
-    Logger.warning("Your cookies aren't baked enough")
-    Logger.success("Cookies succefully baked")
-    Logger.starting("Preparing oven to bake cookies")
-    Logger.info("You've eaten the cookie")
-    Logger.debug("Hello World")
+    logger = Logger(colors = False, format = "[{logtype}] ({date} | {time} | {timestamp}) > {message}")
+    logger.error("Your script crashed for no reason")
+    logger.warning("Your cookies aren't baked enough")
+    logger.success("Cookies succefully baked")
+    logger.info("You've eaten the cookie")
+    logger.debug("Hello World")
     input()
